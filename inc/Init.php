@@ -1,6 +1,6 @@
 <?php
 
-namespace Kgm\Inc;
+namespace Mlp\Inc;
 
 final class Init{
 
@@ -9,7 +9,6 @@ final class Init{
         return [
             Base\Settings::class,
             Base\Enqueue::class,
-            Base\Ajax::class,
 
         ] ;
     }

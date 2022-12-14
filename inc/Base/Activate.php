@@ -5,7 +5,7 @@
 * @package yariko
 *
 */
-namespace Kgm\Inc\Base;
+namespace Mlp\Inc\Base;
 
 class Activate{
 

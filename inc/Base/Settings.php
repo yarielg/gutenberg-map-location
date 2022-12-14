@@ -6,36 +6,45 @@
 *
 */
 
-namespace Kgm\Inc\Base;
+namespace Mlp\Inc\Base;
 
 class Settings{
 
     public function register(){
 
         /**
-         * Override woocommerce template from plugin
+         * Add the shortcode to render the map with areas and locations
          */
+        add_shortcode( 'mlp_map', array($this, 'render_map') );
 
-        add_filter( 'woocommerce_locate_template', array($this, 'kgm_locate_template'), 10, 3 );
+        /**
+         * Add the map gutenberg block
+         */
+        //add_action( 'init', array($this, 'map_block') );
+
 
     }
 
-    function kgm_locate_template( $template, $template_name, $template_path ) {
-        $basename = basename( $template );
 
-        switch ($basename){
-            case 'review-order.php':
-                $template = KGM_PLUGIN_PATH . 'templates/review-order.php';
-                break;
-            case 'payment.php':
-                $template = KGM_PLUGIN_PATH . 'templates/payment.php';
-                break;
-            case 'form-checkout.php':
-                $template = KGM_PLUGIN_PATH . 'templates/form-checkout.php';
-                break;
-        }
 
-        return $template;
+    /*function map_block(){
+        register_block_type( MLP_PLUGIN_DIR
+        );
+    }*/
+
+    /*function render_editor($attr, $content){
+    }*/
+
+    function render_map($atts){
+        $a = shortcode_atts( array(
+            'cols' => 4,
+        ), $atts );
+
+        wp_enqueue_script('main-js', MLP_PLUGIN_URL  . '/assets/js/main.js' ,array('jquery', 'leaflet-js', 'area-js'),'v-' . strtotime(date('h:i:s')), true);
+
+        wp_localize_script( 'main-js', 'parameters', ['ajax_url'=> admin_url('admin-ajax.php'), 'plugin_url' => MLP_PLUGIN_URL, 'state' => 'California']);
+
+        return mlp_template(MLP_PLUGIN_PATH . 'templates/map.php' , array());
     }
 
 }

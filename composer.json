@@ -9,7 +9,7 @@
     ],
     "require": {},
     "autoload": {
-        "psr-4": { "Kgm\\Inc\\": "./inc"
+        "psr-4": { "Mlp\\Inc\\": "./inc"
         }
     }
 }

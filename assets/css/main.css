@@ -1,88 +1,10 @@
-#map_id_wrapper{
-    height: 500px !important;
+.leaflet-container {
+    height: 400px;
+    width: 600px;
+    max-width: 100%;
+    max-height: 100%;
 }
 
-#fll_dealer_list{
-    height: 500px;
-    overflow-y: scroll;
-}
-
-#fll_dealer_list .dealer-list-item{
-    width: 100%;
-    background: aliceblue;
-    padding: 18px 18px 30px;
-    border-top: 2px solid black;
-}
-
-#fll_dealer_list p, #dealer_info_selected p{
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-#fll_dealer_list .dealer-list-item:hover{
-    background: #999999;
-    color: black;
-}
-
-#fll_dealer_list .dealer-list-item button{
-    float: right;
-}
-
-#fll_dealer_list .dealer-list-item button:hover{
-    cursor: pointer;
-}
-
-#fll_dealer_list .right-info{
-    float: right;
-    display: flex;
-    align-items: center;
-}
-
-img.certified_img{
-    display: inline-block !important;
-}
-
-.label_dealer_radio{
-    margin-right: 30px;
-}
-
-/** Progress with steps */
-
-ol.progtrckr {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-}
-
-ol.progtrckr li {
-    display: inline-block;
-    text-align: center;
-    line-height: 3em;
-}
-
-ol.progtrckr[data-progtrckr-steps="2"] li { width: 49%; }
-ol.progtrckr[data-progtrckr-steps="3"] li { width: 33%; }
-ol.progtrckr[data-progtrckr-steps="4"] li { width: 24%; }
-
-ol.progtrckr li {
-    color: black;
-    border-bottom: 16px solid lightgrey;
-}
-
-ol.progtrckr li.progtrckr-done {
-    color: black;
-    border-bottom: 16px solid #174171;
-}
-ol.progtrckr li.progtrckr-todo {
-    color: silver;
-    border-bottom: 4px solid silver;
-}
-
-ol.progtrckr li.progtrckr-todo:before {
-    content: "\039F";
-    color: silver;
-    background-color: white;
-    font-size: 1.5em;
-    bottom: -1.6em;
-}
-
+#map { width: 800px; height: 500px; }
+.info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; } .info h4 { margin: 0 0 5px; color: #777; }
+.legend { text-align: left; line-height: 18px; color: #555; } .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }

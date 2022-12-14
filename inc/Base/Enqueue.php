@@ -6,38 +6,38 @@
 *
 */
 
-namespace Kgm\Inc\Base;
+namespace Mlp\Inc\Base;
 
 class Enqueue{
 
     public function register(){
 
+        add_action( 'wp_enqueue_scripts',  array($this,'enqueue_frontend'));
 
-        add_action( 'wp_enqueue_scripts',  array($this,'kgm_enqueue_frontend'));
-        add_action( 'wp_head',  array($this, 'kmg_enqueue_map_scripts'));
+        add_action('init', array($this, 'gutenberg_blocks'));
 
     }
 
-    /**
-     * Adding the map scripts (A condition is required in case the map is not needed)
-     */
-    function kmg_enqueue_map_scripts(){
-        ?>
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-        <?php
-    }
 
     /**
      * Enqueueing the main scripts with all the javascript logic that this plugin offer
      */
-    function kgm_enqueue_frontend(){
-        wp_enqueue_style('main-css', KGM_PLUGIN_URL . '/assets/css/main.css');
-        wp_enqueue_script('main-js', KGM_PLUGIN_URL  . '/assets/js/main.js' ,array('jquery'),'1.0', false);
-        wp_enqueue_script('map-js', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBMwYpxeHMJ249d2oWOfcFwyxe5kcAAcB0&callback=window.Kgm.MapHandler.initMap&v=weekly&libraries=places' ,array(),'1.0', true);
+    function enqueue_frontend(){
+        wp_enqueue_style('main-css', MLP_PLUGIN_URL . '/assets/css/main.css');
+        wp_enqueue_style('leaflet-css', MLP_PLUGIN_URL . '/assets/css/leaflet.css');
 
+        wp_enqueue_script('leaflet-js', MLP_PLUGIN_URL  . '/assets/js/leaflet.js' ,array('jquery'),'1.0', false);
+        wp_enqueue_script('area-js', MLP_PLUGIN_URL  . '/assets/js/area.js' ,array(),'1.0', true);
 
-        wp_localize_script( 'main-js', 'parameters', ['ajax_url'=> admin_url('admin-ajax.php'), 'plugin_url' => KGM_PLUGIN_URL]);
-        wp_enqueue_script('checkout-js', KGM_PLUGIN_URL  . '/assets/js/checkout.js' ,array('jquery','main-js'),'1.0', true);
+    }
+
+    function gutenberg_blocks(){
+
+        wp_register_script('map-location-js', MLP_PLUGIN_URL . 'build/index.js', array('wp-blocks'));
+
+        register_block_type('tbg/map-location', array(
+            'editor_script' => 'map-location-js'
+        ));
     }
 
 }

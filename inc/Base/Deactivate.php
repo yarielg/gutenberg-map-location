@@ -6,7 +6,7 @@
 *
 */
 
-namespace Kgm\Inc\Base;
+namespace Mlp\Inc\Base;
 
 class Deactivate{
 
