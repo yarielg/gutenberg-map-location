@@ -93,6 +93,9 @@ __webpack_require__.r(__webpack_exports__);
 const {
   registerBlockType
 } = wp.blocks;
+const {
+  RichText
+} = wp.editor;
 registerBlockType('tbg/map-location', {
   //built-in attributes
   title: 'Map Location',
@@ -101,34 +104,69 @@ registerBlockType('tbg/map-location', {
   category: 'layout',
   // custom attributes
   attributes: {
-    author: {
-      type: 'string'
+    title: {
+      type: 'string',
+      source: 'html',
+      selector: 'h2'
+    },
+    body: {
+      type: 'string',
+      source: 'html',
+      selector: 'p'
     }
   },
-  //custom functions
-
   //built-in functions
   edit(_ref) {
     let {
       attributes,
       setAttributes
     } = _ref;
-    function updateAuthor(event) {
+    const {
+      title,
+      body
+    } = attributes;
+
+    //custom functions
+    function onChangeTitle(newTitle) {
       setAttributes({
-        author: event.target.value
+        title: newTitle
       });
     }
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-      type: "text",
-      value: attributes.author,
-      onChange: updateAuthor
-    });
+    function onChangeBody(NewBody) {
+      setAttributes({
+        body: NewBody
+      });
+    }
+    return [(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      class: "cta-container"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
+      key: "editable",
+      tagName: "h2",
+      placeholder: "Your CTA title",
+      value: title,
+      onChange: onChangeTitle
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
+      key: "editable",
+      tagName: "p",
+      placeholder: "Your CTA Description",
+      value: body,
+      onChange: onChangeBody
+    }))];
   },
   save(_ref2) {
     let {
       attributes
     } = _ref2;
-    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Author: ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", null, attributes.author));
+    const {
+      title,
+      body
+    } = attributes;
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      class: "cta-container"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
+      tag: "p",
+      value: body
+    }));
   }
 });
 })();
