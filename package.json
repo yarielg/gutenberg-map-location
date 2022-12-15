@@ -34,5 +34,8 @@
     "build": "run-p \"build:*\"",
     "watch": "chokidar \"**/*.scss\" -c \"npm run build\" --initial",
     "start-build": "wp-scripts start"
+  },
+  "dependencies": {
+    "@wordpress/server-side-render": "^4.0.0"
   }
 }

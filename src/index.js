@@ -1,6 +1,8 @@
 const  { registerBlockType } = wp.blocks;
-const  { RichText, InspectorControls, ColorPalette,  } = wp.editor;
-const  { PanelBody  } = wp.components;
+const  { RichText, InspectorControls  } = wp.editor;
+const  { PanelBody, Button, CheckboxControl  } = wp.components;
+const { serverSideRender } = wp;
+const { useState } = wp.element;
 
 registerBlockType('tbg/map-location', {
 
@@ -12,72 +14,85 @@ registerBlockType('tbg/map-location', {
 
     // custom attributes
     attributes: {
-        title:{
-            type: 'string',
-            source: 'html',
-            selector: 'h2'
+        areas_selected:{
+            type: 'array',
+            default: []
         },
-        body: {
+        shortcode:{
             type: 'string',
-            source: 'html',
-            selector: 'p'
+            default: "[mlp_map areas='']"
         },
-        titleColor:{
-            type: 'string',
-            default: '#000000'
-        }
     },
 
     //built-in functions
     edit({ attributes, setAttributes }){
 
-        const { title, body, titleColor } = attributes;
+
+        const { areas_selected, shortcode } = attributes;
+
+        const areas = parameters.areas;
 
         //custom functions
-        function onChangeTitle(newTitle){
-            setAttributes( { title: newTitle } );
+        function onChangeAreas(x,s){
+            console.log(x)
+            console.log(s)
+            let new_selection = areas_selected;
+
+
+
+            if(x && !new_selection.includes(s)){
+                new_selection.push(s);
+            }
+
+            if(!x){
+                const index = new_selection.indexOf(s);
+                if (index > -1) { // only splice array when item is found
+                    new_selection.splice(index, 1); // 2nd parameter means remove one item only
+                }
+            }
+
+            setAttributes({ areas_selected :  new_selection})
+
+            const shortcode_output = "[mlp_map areas='" + areas_selected.join() + "']";
+
+            setAttributes({ shortcode: shortcode_output })
+
         }
 
-        function onChangeBody(newBody){
-            setAttributes( { body: newBody } );
-        }
+        const split_strings = shortcode.split("'");
 
-        function onTitleColorChange(newColor){
-            setAttributes( { titleColor : newColor } );
-        }
+        const ids =  split_strings[1].split(',');
 
         return ([
             <InspectorControls style={ {marginBottom: '40px'} }>
-                <PanelBody title={ 'Font Color Settings' }>
-                    <p><strong>Select a Title Color:</strong> </p>
-                    <ColorPalette value={ titleColor } onChange={ onTitleColorChange }></ColorPalette>
+                <PanelBody title={ 'Map Selection Settings' }>
+                    {areas.map(function(area, i){
+                        return <CheckboxControl key={area.term_id} label={area.name} onChange={(e) => onChangeAreas(e,area.term_id)} checked={ids.includes(area.term_id + "")}   />
+                    })}
                 </PanelBody>
             </InspectorControls>,
-            <div class="cta-container">
-                <RichText key="editable"
-                          tagName="h2"
-                          placeholder="Your CTA title"
-                          value={title}
-                          onChange={onChangeTitle}
-                          style={ { color: titleColor } }  />
-                <RichText key="editable"
-                          tagName="p"
-                          placeholder="Your CTA Description"
-                          value={body}
-                          onChange={onChangeBody}/>
-            </div>
+            <div>{shortcode}</div>
         ]);
     },
 
     save({ attributes }){
 
-        const { title, body, titleColor } = attributes;
+        const {shortcode } = attributes;
 
-        return (
+
+
+        return <div className="cta-container">
+            {shortcode}
+        </div>
+       // return '[mlp_map areas="'+areas_selected.join()+'"]';
+         /*
+        <p><input checked={ areas_selected.includes(area.term_id)} term_id={area.term_id} onChange={onChangeAreas} id={ 'area-' + area.term_id } type="checkbox" /> <label
+                            for={'area-' + area.term_id}>{area.name}</label></p>;
+        (
             <div class="cta-container">
                 <h2 style={ { color: titleColor } }>{ title }</h2>
                 <RichText.Content tag="p" value={body} />
             </div>
-        );
+        );*/
     }
 })

@@ -95,12 +95,19 @@ const {
 } = wp.blocks;
 const {
   RichText,
-  InspectorControls,
-  ColorPalette
+  InspectorControls
 } = wp.editor;
 const {
-  PanelBody
+  PanelBody,
+  Button,
+  CheckboxControl
 } = wp.components;
+const {
+  serverSideRender
+} = wp;
+const {
+  useState
+} = wp.element;
 registerBlockType('tbg/map-location', {
   //built-in attributes
   title: 'Map Location',
@@ -109,19 +116,13 @@ registerBlockType('tbg/map-location', {
   category: 'layout',
   // custom attributes
   attributes: {
-    title: {
-      type: 'string',
-      source: 'html',
-      selector: 'h2'
+    areas_selected: {
+      type: 'array',
+      default: []
     },
-    body: {
+    shortcode: {
       type: 'string',
-      source: 'html',
-      selector: 'p'
-    },
-    titleColor: {
-      type: 'string',
-      default: '#000000'
+      default: "[mlp_map areas='']"
     }
   },
   //built-in functions
@@ -131,74 +132,72 @@ registerBlockType('tbg/map-location', {
       setAttributes
     } = _ref;
     const {
-      title,
-      body,
-      titleColor
+      areas_selected,
+      shortcode
     } = attributes;
+    const areas = parameters.areas;
 
     //custom functions
-    function onChangeTitle(newTitle) {
+    function onChangeAreas(x, s) {
+      console.log(x);
+      console.log(s);
+      let new_selection = areas_selected;
+      if (x && !new_selection.includes(s)) {
+        new_selection.push(s);
+      }
+      if (!x) {
+        const index = new_selection.indexOf(s);
+        if (index > -1) {
+          // only splice array when item is found
+          new_selection.splice(index, 1); // 2nd parameter means remove one item only
+        }
+      }
+
       setAttributes({
-        title: newTitle
+        areas_selected: new_selection
+      });
+      const shortcode_output = "[mlp_map areas='" + areas_selected.join() + "']";
+      setAttributes({
+        shortcode: shortcode_output
       });
     }
-    function onChangeBody(newBody) {
-      setAttributes({
-        body: newBody
-      });
-    }
-    function onTitleColorChange(newColor) {
-      setAttributes({
-        titleColor: newColor
-      });
-    }
+    const split_strings = shortcode.split("'");
+    const ids = split_strings[1].split(',');
     return [(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
       style: {
         marginBottom: '40px'
       }
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
-      title: 'Font Color Settings'
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, "Select a Title Color:"), " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
-      value: titleColor,
-      onChange: onTitleColorChange
-    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      class: "cta-container"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
-      key: "editable",
-      tagName: "h2",
-      placeholder: "Your CTA title",
-      value: title,
-      onChange: onChangeTitle,
-      style: {
-        color: titleColor
-      }
-    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
-      key: "editable",
-      tagName: "p",
-      placeholder: "Your CTA Description",
-      value: body,
-      onChange: onChangeBody
-    }))];
+      title: 'Map Selection Settings'
+    }, areas.map(function (area, i) {
+      return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(CheckboxControl, {
+        key: area.term_id,
+        label: area.name,
+        onChange: e => onChangeAreas(e, area.term_id),
+        checked: ids.includes(area.term_id + "")
+      });
+    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, shortcode)];
   },
   save(_ref2) {
     let {
       attributes
     } = _ref2;
     const {
-      title,
-      body,
-      titleColor
+      shortcode
     } = attributes;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      class: "cta-container"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
-      style: {
-        color: titleColor
-      }
-    }, title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
-      tag: "p",
-      value: body
-    }));
+      className: "cta-container"
+    }, shortcode);
+    // return '[mlp_map areas="'+areas_selected.join()+'"]';
+    /*
+    <p><input checked={ areas_selected.includes(area.term_id)} term_id={area.term_id} onChange={onChangeAreas} id={ 'area-' + area.term_id } type="checkbox" /> <label
+                       for={'area-' + area.term_id}>{area.name}</label></p>;
+    (
+       <div class="cta-container">
+           <h2 style={ { color: titleColor } }>{ title }</h2>
+           <RichText.Content tag="p" value={body} />
+       </div>
+    );*/
   }
 });
 })();
