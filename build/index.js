@@ -94,8 +94,13 @@ const {
   registerBlockType
 } = wp.blocks;
 const {
-  RichText
+  RichText,
+  InspectorControls,
+  ColorPalette
 } = wp.editor;
+const {
+  PanelBody
+} = wp.components;
 registerBlockType('tbg/map-location', {
   //built-in attributes
   title: 'Map Location',
@@ -113,6 +118,10 @@ registerBlockType('tbg/map-location', {
       type: 'string',
       source: 'html',
       selector: 'p'
+    },
+    titleColor: {
+      type: 'string',
+      default: '#000000'
     }
   },
   //built-in functions
@@ -123,7 +132,8 @@ registerBlockType('tbg/map-location', {
     } = _ref;
     const {
       title,
-      body
+      body,
+      titleColor
     } = attributes;
 
     //custom functions
@@ -132,19 +142,36 @@ registerBlockType('tbg/map-location', {
         title: newTitle
       });
     }
-    function onChangeBody(NewBody) {
+    function onChangeBody(newBody) {
       setAttributes({
-        body: NewBody
+        body: newBody
       });
     }
-    return [(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    function onTitleColorChange(newColor) {
+      setAttributes({
+        titleColor: newColor
+      });
+    }
+    return [(0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(InspectorControls, {
+      style: {
+        marginBottom: '40px'
+      }
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(PanelBody, {
+      title: 'Font Color Settings'
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, "Select a Title Color:"), " "), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ColorPalette, {
+      value: titleColor,
+      onChange: onTitleColorChange
+    }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       class: "cta-container"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
       key: "editable",
       tagName: "h2",
       placeholder: "Your CTA title",
       value: title,
-      onChange: onChangeTitle
+      onChange: onChangeTitle,
+      style: {
+        color: titleColor
+      }
     }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText, {
       key: "editable",
       tagName: "p",
@@ -159,11 +186,16 @@ registerBlockType('tbg/map-location', {
     } = _ref2;
     const {
       title,
-      body
+      body,
+      titleColor
     } = attributes;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       class: "cta-container"
-    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", {
+      style: {
+        color: titleColor
+      }
+    }, title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(RichText.Content, {
       tag: "p",
       value: body
     }));

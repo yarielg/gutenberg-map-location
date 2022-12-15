@@ -33,7 +33,7 @@ class Enqueue{
 
     function gutenberg_blocks(){
 
-        wp_register_script('map-location-js', MLP_PLUGIN_URL . 'build/index.js', array('wp-blocks', 'wp-editor'));
+        wp_register_script('map-location-js', MLP_PLUGIN_URL . 'build/index.js', array('wp-blocks', 'wp-editor', 'wp-components'));
 
         register_block_type('tbg/map-location', array(
             'editor_script' => 'map-location-js'

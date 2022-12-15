@@ -1,5 +1,6 @@
 const  { registerBlockType } = wp.blocks;
-const  { RichText } = wp.editor;
+const  { RichText, InspectorControls, ColorPalette,  } = wp.editor;
+const  { PanelBody  } = wp.components;
 
 registerBlockType('tbg/map-location', {
 
@@ -20,30 +21,45 @@ registerBlockType('tbg/map-location', {
             type: 'string',
             source: 'html',
             selector: 'p'
+        },
+        titleColor:{
+            type: 'string',
+            default: '#000000'
         }
     },
 
     //built-in functions
     edit({ attributes, setAttributes }){
 
-        const { title, body } = attributes;
+        const { title, body, titleColor } = attributes;
 
         //custom functions
         function onChangeTitle(newTitle){
             setAttributes( { title: newTitle } );
         }
 
-        function onChangeBody(NewBody){
-            setAttributes( { body: NewBody } );
+        function onChangeBody(newBody){
+            setAttributes( { body: newBody } );
+        }
+
+        function onTitleColorChange(newColor){
+            setAttributes( { titleColor : newColor } );
         }
 
         return ([
+            <InspectorControls style={ {marginBottom: '40px'} }>
+                <PanelBody title={ 'Font Color Settings' }>
+                    <p><strong>Select a Title Color:</strong> </p>
+                    <ColorPalette value={ titleColor } onChange={ onTitleColorChange }></ColorPalette>
+                </PanelBody>
+            </InspectorControls>,
             <div class="cta-container">
                 <RichText key="editable"
                           tagName="h2"
                           placeholder="Your CTA title"
                           value={title}
-                          onChange={onChangeTitle}/>
+                          onChange={onChangeTitle}
+                          style={ { color: titleColor } }  />
                 <RichText key="editable"
                           tagName="p"
                           placeholder="Your CTA Description"
@@ -55,11 +71,11 @@ registerBlockType('tbg/map-location', {
 
     save({ attributes }){
 
-        const { title, body } = attributes;
+        const { title, body, titleColor } = attributes;
 
         return (
             <div class="cta-container">
-                <h2>{ title }</h2>
+                <h2 style={ { color: titleColor } }>{ title }</h2>
                 <RichText.Content tag="p" value={body} />
             </div>
         );
